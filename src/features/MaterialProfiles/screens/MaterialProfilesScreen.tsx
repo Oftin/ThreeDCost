@@ -28,27 +28,36 @@ const MaterialProfilesScreen: React.FC = () => {
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
         <Appbar.Content title="Profile Materiałów" />
-        <Appbar.Action icon="plus" onPress={() => router.push("/material-profiles/new")} />
+        <Appbar.Action icon="plus" onPress={() => router.push("/material-profiles/new")} color={theme.colors.onPrimary} />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {materialProfiles.length === 0 ? (
-          <Text style={styles.emptyText}>Brak zapisanych profili materiałów. Dodaj nowy!</Text>
+          <Text style={[styles.emptyText, { color: theme.colors.onBackground }]}>Brak zapisanych profili materiałów. Dodaj nowy!</Text>
         ) : (
           materialProfiles.map((profile) => (
-            <Card key={profile.id} style={styles.card}>
+            <Card
+              key={profile.id}
+              style={[
+                styles.card,
+                {
+                  backgroundColor: theme.colors.surface,
+                },
+              ]}
+            >
               <Card.Title
                 title={profile.name}
+                titleStyle={{ color: theme.colors.onSurface }}
                 right={() => (
                   <View style={styles.cardActions}>
-                    <IconButton icon="pencil" onPress={() => handleEdit(profile)} />
-                    <IconButton icon="delete" onPress={() => handleDelete(profile.id)} />
+                    <IconButton icon="pencil" onPress={() => handleEdit(profile)} iconColor={theme.colors.onSurfaceVariant} />
+                    <IconButton icon="delete" onPress={() => handleDelete(profile.id)} iconColor={theme.colors.error} />
                   </View>
                 )}
               />
               <Card.Content>
-                <Text>Koszt/gram: {profile.costPerGram} zł</Text>
-                <Text>Gęstość: {profile.density} g/cm³</Text>
-                <Text>Zużycie energii: {profile.energyConsumption} kWh/g</Text>
+                <Text style={{ color: theme.colors.onSurface }}>Koszt/gram: {profile.costPerGram} zł</Text>
+                <Text style={{ color: theme.colors.onSurface }}>Gęstość: {profile.density} g/cm³</Text>
+                <Text style={{ color: theme.colors.onSurface }}>Zużycie energii: {profile.energyConsumption} kWh/g</Text>
               </Card.Content>
             </Card>
           ))
@@ -67,6 +76,8 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 16,
+    elevation: 2,
+    borderRadius: 8,
   },
   cardActions: {
     flexDirection: "row",

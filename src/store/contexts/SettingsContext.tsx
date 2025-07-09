@@ -1,4 +1,4 @@
-import { ASYNC_STORAGE_KEYS, DEFAULT_APP_SETTINGS } from "@/src/constants/appConstants";
+import { ASYNC_STORAGE_KEYS, DEFAULT_APP_SETTINGS } from "@/src/constants";
 import { AppSettings } from "@/src/features/Settings/types/settingsTypes";
 import { getAsyncStorageItem, setAsyncStorageItem } from "@/src/services";
 import React, { createContext, useState, useEffect, useCallback } from "react";

@@ -1,24 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
 import { PaperProvider } from "react-native-paper";
 import { ThemeProvider } from "@react-navigation/native";
 import { useColorScheme } from "react-native";
 import { PaperLightTheme, PaperDarkTheme, NavigationLightTheme, NavigationDarkTheme } from "./styles/theme";
-import { SettingsProvider } from "./store/contexts/SettingsContext";
-import { MaterialProfilesProvider } from "./store/contexts/MaterialProfilesContext";
+import { SettingsProvider, SettingsContext } from "./store/contexts/SettingsContext";
 
 const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const colorScheme = useColorScheme();
+  return (
+    <SettingsProvider>
+      <ThemedAppContent>{children}</ThemedAppContent>
+    </SettingsProvider>
+  );
+};
 
-  const paperTheme = colorScheme === "dark" ? PaperDarkTheme : PaperLightTheme;
-  const navigationTheme = colorScheme === "dark" ? NavigationDarkTheme : NavigationLightTheme;
+const ThemedAppContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { settings } = useContext(SettingsContext);
+  const systemColorScheme = useColorScheme();
+
+  const actualColorScheme = settings.themeMode === "system" ? systemColorScheme : settings.themeMode;
+
+  const paperTheme = actualColorScheme === "dark" ? PaperDarkTheme : PaperLightTheme;
+  const navigationTheme = actualColorScheme === "dark" ? NavigationDarkTheme : NavigationLightTheme;
 
   return (
     <PaperProvider theme={paperTheme}>
-      <ThemeProvider value={navigationTheme}>
-        <SettingsProvider>
-          <MaterialProfilesProvider>{children}</MaterialProfilesProvider>
-        </SettingsProvider>
-      </ThemeProvider>
+      <ThemeProvider value={navigationTheme}>{children}</ThemeProvider>
     </PaperProvider>
   );
 };

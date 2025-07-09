@@ -1,12 +1,17 @@
 import { TabBarIcon } from "@/src/features/common/components/TabBarIcon";
 import { Tabs } from "expo-router";
 import React from "react";
+import { useTheme } from "react-native-paper";
 
 export default function TabLayout() {
+  const theme = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        animation: "shift",
+        tabBarActiveTintColor: theme.colors.primary,
       }}
     >
       <Tabs.Screen
@@ -27,7 +32,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: "Ustawienia",
-          tabBarIcon: ({ color }) => <TabBarIcon name="settings-helper" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />
     </Tabs>

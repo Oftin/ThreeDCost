@@ -1,4 +1,4 @@
-import { ASYNC_STORAGE_KEYS } from "@/src/constants/appConstants";
+import { ASYNC_STORAGE_KEYS } from "@/src/constants";
 import { MaterialProfile } from "@/src/features/MaterialProfiles/types/materialTypes";
 import { getAsyncStorageItem, setAsyncStorageItem } from "@/src/services";
 import React, { createContext, useState, useEffect, useCallback } from "react";

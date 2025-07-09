@@ -7,8 +7,6 @@ export default function AddEditMaterialRoute() {
   const isEditing = id && id !== "new";
   const title = isEditing ? "Edytuj Profil Materiału" : "Dodaj Profil Materiału";
 
-  console.log("id: ", id);
-
   return (
     <>
       <Stack.Screen options={{ title: title }} />
