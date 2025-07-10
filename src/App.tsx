@@ -4,11 +4,14 @@ import { ThemeProvider } from "@react-navigation/native";
 import { useColorScheme } from "react-native";
 import { PaperLightTheme, PaperDarkTheme, NavigationLightTheme, NavigationDarkTheme } from "./styles/theme";
 import { SettingsProvider, SettingsContext } from "./store/contexts/SettingsContext";
+import { MaterialProfilesProvider } from "./store/contexts/MaterialProfilesContext";
 
 const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <SettingsProvider>
-      <ThemedAppContent>{children}</ThemedAppContent>
+      <MaterialProfilesProvider>
+        <ThemedAppContent>{children}</ThemedAppContent>
+      </MaterialProfilesProvider>
     </SettingsProvider>
   );
 };

@@ -1,7 +1,7 @@
-import { ASYNC_STORAGE_KEYS, DEFAULT_APP_SETTINGS } from "@/src/constants";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
+import { ASYNC_STORAGE_KEYS, DEFAULT_APP_SETTINGS } from "../../constants/appConstants";
 import { AppSettings } from "@/src/features/Settings/types/settingsTypes";
 import { getAsyncStorageItem, setAsyncStorageItem } from "@/src/services";
-import React, { createContext, useState, useEffect, useCallback } from "react";
 
 interface SettingsContextType {
   settings: AppSettings;
@@ -15,7 +15,7 @@ export const SettingsContext = createContext<SettingsContextType>({
   isLoadingSettings: true,
 });
 
-export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_APP_SETTINGS);
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
 
@@ -35,7 +35,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     loadSettings();
   }, []);
 
-  const updateSettings = useCallback(
+  const updateSettings = React.useCallback(
     async (newPartialSettings: Partial<AppSettings>) => {
       const updated = { ...settings, ...newPartialSettings };
       setSettings(updated);
@@ -48,5 +48,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     [settings]
   );
 
-  return <SettingsContext.Provider value={{ settings, updateSettings, isLoadingSettings }}>{children}</SettingsContext.Provider>;
+  if (!isLoadingSettings) {
+    return <SettingsContext.Provider value={{ settings, updateSettings, isLoadingSettings }}>{children}</SettingsContext.Provider>;
+  }
+  return null;
 };

@@ -8,8 +8,10 @@ export enum ASYNC_STORAGE_KEYS {
 }
 
 export const DEFAULT_APP_SETTINGS: AppSettings = {
-  currency: CURRENCIES[0], // Domyślna waluta
-  defaultHourlyRate: 50, // Domyślna stawka godzinowa
-  defaultMachineDepreciationRate: 10, // Domyślna stawka amortyzacji maszyny
-  themeMode: "system", // Domyślny tryb motywu: 'light' | 'dark' | 'system'
+  currency: CURRENCIES[0],
+  defaultHourlyRate: 50,
+  defaultMachineDepreciationRate: 10,
+  themeMode: "system",
+  unitSystem: "metric",
+  language: "pl",
 };

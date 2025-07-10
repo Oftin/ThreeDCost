@@ -15,7 +15,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="calculatorScreen"
+        name="index"
         options={{
           title: "Kalkulator",
           tabBarIcon: ({ color }) => <TabBarIcon name="calculator" color={color} />,

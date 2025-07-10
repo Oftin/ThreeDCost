@@ -4,35 +4,50 @@ import { Text, Appbar, Button, Card, IconButton, useTheme } from "react-native-p
 import { MaterialProfile } from "../types/materialTypes";
 import { router } from "expo-router";
 import { MaterialProfilesContext } from "@/src/store/contexts/MaterialProfilesContext";
+import { useTranslation } from "@/src/localization/i18n";
+import { SettingsContext } from "@/src/store/contexts/SettingsContext";
 
 const MaterialProfilesScreen: React.FC = () => {
   const theme = useTheme();
   const { materialProfiles, deleteMaterialProfile } = useContext(MaterialProfilesContext);
+  const { settings } = useContext(SettingsContext);
+
+  const T = useTranslation();
 
   const handleEdit = (profile: MaterialProfile) => {
     router.push({ pathname: "/material-profiles/[id]", params: { id: profile.id } });
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert("Potwierdź usunięcie", "Czy na pewno chcesz usunąć ten profil materiału?", [
-      { text: "Anuluj", style: "cancel" },
+    Alert.alert(T.materialProfiles.confirmDelete, T.materialProfiles.areYouSureDelete, [
+      { text: T.common.cancel, style: "cancel" },
       {
-        text: "Usuń",
+        text: T.common.deleteConfirm,
         onPress: () => deleteMaterialProfile(id),
         style: "destructive",
       },
     ]);
   };
 
+  const getTranslatedLabel = (key: keyof typeof T.materialProfiles, replacements?: { [key: string]: string | number }) => {
+    let label = T.materialProfiles[key] || key;
+    if (replacements) {
+      for (const placeholder in replacements) {
+        label = label.replace(`{${placeholder}}`, String(replacements[placeholder]));
+      }
+    }
+    return label;
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
-        <Appbar.Content title="Profile Materiałów" />
-        <Appbar.Action icon="plus" onPress={() => router.push("/material-profiles/new")} color={theme.colors.onPrimary} />
+        <Appbar.Content title={T.materialProfiles.title} />
+        <Appbar.Action icon="plus" onPress={() => router.push("/material-profiles/new")} color={theme.colors.primary} />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {materialProfiles.length === 0 ? (
-          <Text style={[styles.emptyText, { color: theme.colors.onBackground }]}>Brak zapisanych profili materiałów. Dodaj nowy!</Text>
+          <Text style={[styles.emptyText, { color: theme.colors.onBackground }]}>{T.materialProfiles.noProfilesFound}</Text>
         ) : (
           materialProfiles.map((profile) => (
             <Card
@@ -55,9 +70,15 @@ const MaterialProfilesScreen: React.FC = () => {
                 )}
               />
               <Card.Content>
-                <Text style={{ color: theme.colors.onSurface }}>Koszt/gram: {profile.costPerGram} zł</Text>
-                <Text style={{ color: theme.colors.onSurface }}>Gęstość: {profile.density} g/cm³</Text>
-                <Text style={{ color: theme.colors.onSurface }}>Zużycie energii: {profile.energyConsumption} kWh/g</Text>
+                <Text style={{ color: theme.colors.onSurface }}>
+                  {getTranslatedLabel("pricePerUnit", { currency: settings.currency })}: {profile.costPerGram} {settings.currency}
+                </Text>
+                <Text style={{ color: theme.colors.onSurface }}>
+                  {T.materialProfiles.density}: {profile.density} g/cm³
+                </Text>
+                <Text style={{ color: theme.colors.onSurface }}>
+                  {T.materialProfiles.energyConsumption}: {profile.energyConsumption} kWh/g
+                </Text>
               </Card.Content>
             </Card>
           ))

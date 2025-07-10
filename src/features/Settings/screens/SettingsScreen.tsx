@@ -3,12 +3,15 @@ import { SettingsContext } from "@/src/store/contexts/SettingsContext";
 import React, { useContext, useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Text, Appbar, TextInput, Button, SegmentedButtons, Divider, Snackbar, useTheme } from "react-native-paper";
-import { ThemeMode } from "../types/settingsTypes";
+import { Language, ThemeMode, UnitSystem } from "../types/settingsTypes";
+import { useTranslation } from "@/src/localization/i18n";
 import { CommonColors } from "@/src/styles/colors";
 
 const SettingsScreen: React.FC = () => {
   const theme = useTheme();
   const { settings, updateSettings } = useContext(SettingsContext);
+
+  const T = useTranslation();
 
   const [defaultHourlyRate, setDefaultHourlyRate] = useState(String(settings.defaultHourlyRate));
   const [defaultMachineDepreciationRate, setDefaultMachineDepreciationRate] = useState(String(settings.defaultMachineDepreciationRate));
@@ -29,6 +32,14 @@ const SettingsScreen: React.FC = () => {
 
   const handleThemeModeChange = (value: ThemeMode) => {
     updateSettings({ themeMode: value });
+  };
+
+  const handleUnitSystemChange = (value: UnitSystem) => {
+    updateSettings({ unitSystem: value });
+  };
+
+  const handleLanguageChange = (value: Language) => {
+    updateSettings({ language: value });
   };
 
   const handleSaveRates = async () => {
@@ -56,49 +67,70 @@ const SettingsScreen: React.FC = () => {
   }));
 
   const themeModeOptions: { value: ThemeMode; label: string }[] = [
-    { value: "light" as ThemeMode, label: "Jasny" },
-    { value: "dark" as ThemeMode, label: "Ciemny" },
-    { value: "system" as ThemeMode, label: "Systemowy" },
+    { value: "light" as ThemeMode, label: T.settings.light },
+    { value: "dark" as ThemeMode, label: T.settings.dark },
+    { value: "system" as ThemeMode, label: T.settings.system },
+  ];
+
+  const unitSystemOptions: { value: UnitSystem; label: string }[] = [
+    { value: "metric" as UnitSystem, label: T.settings.metric },
+    { value: "imperial" as UnitSystem, label: T.settings.imperial },
+  ];
+
+  const languageOptions: { value: Language; label: string }[] = [
+    { value: "pl" as Language, label: T.settings.polish },
+    { value: "en" as Language, label: T.settings.english },
+    { value: "zh" as Language, label: T.settings.chinese },
   ];
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
-        <Appbar.Content title="Ustawienia" />
+        <Appbar.Content title={T.settings.title} />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text variant="titleMedium" style={[styles.sectionTitle, { color: theme.colors.onBackground }]}>
-          Ogólne Ustawienia
+          {T.settings.generalSettings}
         </Text>
         <View style={styles.inputGroup}>
-          <Text style={[styles.label, { color: theme.colors.onSurface }]}>Domyślna Waluta:</Text>
+          <Text style={[styles.label, { color: theme.colors.onSurface }]}>{T.settings.defaultCurrency}</Text>
           <SegmentedButtons<string> value={settings.currency} onValueChange={handleCurrencyChange} buttons={currencyOptions} />
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={[styles.label, { color: theme.colors.onSurface }]}>Tryb Wyświetlania:</Text>
+          <Text style={[styles.label, { color: theme.colors.onSurface }]}>{T.settings.displayMode}</Text>
           <SegmentedButtons<ThemeMode> value={settings.themeMode} onValueChange={handleThemeModeChange} buttons={themeModeOptions} />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={[styles.label, { color: theme.colors.onSurface }]}>{T.settings.unitSystem}</Text>
+          <SegmentedButtons<UnitSystem> value={settings.unitSystem} onValueChange={handleUnitSystemChange} buttons={unitSystemOptions} />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={[styles.label, { color: theme.colors.onSurface }]}>{T.settings.language}</Text>
+          <SegmentedButtons<Language> value={settings.language} onValueChange={handleLanguageChange} buttons={languageOptions} />
         </View>
 
         <Divider style={[styles.divider, { backgroundColor: theme.colors.outline }]} />
 
         <Text variant="titleMedium" style={[styles.sectionTitle, { color: theme.colors.onBackground, marginTop: 20 }]}>
-          Stawki i Amortyzacja
+          {T.settings.ratesAndDepreciation}
         </Text>
-        <TextInput label="Domyślna stawka godzinowa pracy (zł/h)" value={defaultHourlyRate} onChangeText={setDefaultHourlyRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedHourlyRate) && defaultHourlyRate.trim() === ""} />
-        <TextInput label="Domyślna amortyzacja maszyny (zł/h)" value={defaultMachineDepreciationRate} onChangeText={setDefaultMachineDepreciationRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedMachineDepreciationRate) && defaultMachineDepreciationRate.trim() === ""} />
+        <TextInput label={T.settings.defaultHourlyRate} value={defaultHourlyRate} onChangeText={setDefaultHourlyRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedHourlyRate) && defaultHourlyRate.trim() === ""} />
+        <TextInput label={T.settings.defaultMachineDepreciationRate} value={defaultMachineDepreciationRate} onChangeText={setDefaultMachineDepreciationRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedMachineDepreciationRate) && defaultMachineDepreciationRate.trim() === ""} />
 
         <Button mode="contained" onPress={handleSaveRates} style={styles.button} disabled={areRatesUnchanged || !areInputsValidNumbers} buttonColor={areRatesUnchanged || !areInputsValidNumbers ? theme.colors.backdrop : theme.colors.primary} textColor={areRatesUnchanged || !areInputsValidNumbers ? theme.colors.onBackground : theme.colors.onPrimary}>
-          Zapisz Stawki
+          {T.settings.saveRates}
         </Button>
       </ScrollView>
 
       <Snackbar
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
-        duration={3000}
+        duration={1500}
         action={{
-          label: "OK",
+          label: T.settings.ok,
           textColor: CommonColors.onSuccessLight,
           onPress: () => {
             onDismissSnackBar();
@@ -106,7 +138,7 @@ const SettingsScreen: React.FC = () => {
         }}
         style={{ backgroundColor: CommonColors.successLight }}
       >
-        <Text style={{ color: CommonColors.onSuccessLight }}>Stawki zostały pomyślnie zapisane!</Text>
+        <Text style={{ color: CommonColors.onSuccessLight }}>{T.settings.ratesSavedSuccess}</Text>
       </Snackbar>
     </View>
   );
