@@ -19,7 +19,7 @@ const MaterialProfilesScreen: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert(T.materialProfiles.confirmDelete, T.materialProfiles.areYouSureDelete, [
+    Alert.alert(T.common.confirmDelete, T.common.areYouSureDelete, [
       { text: T.common.cancel, style: "cancel" },
       {
         text: T.common.deleteConfirm,
@@ -37,6 +37,10 @@ const MaterialProfilesScreen: React.FC = () => {
       }
     }
     return label;
+  };
+
+  const formatValueWithCurrency = (value: number | string, currencySymbol: string) => {
+    return `${Number(value).toFixed(2)} ${currencySymbol}`;
   };
 
   return (
@@ -71,13 +75,13 @@ const MaterialProfilesScreen: React.FC = () => {
               />
               <Card.Content>
                 <Text style={{ color: theme.colors.onSurface }}>
-                  {getTranslatedLabel("pricePerUnit", { currency: settings.currency })}: {profile.costPerGram} {settings.currency}
+                  {getTranslatedLabel("costPerGram", { currency: settings.currency })}: {formatValueWithCurrency(profile.costPerGram, settings.currency)}
                 </Text>
                 <Text style={{ color: theme.colors.onSurface }}>
-                  {T.materialProfiles.density}: {profile.density} g/cm³
+                  {T.materialProfiles.densityLabel}: {profile.density}
                 </Text>
                 <Text style={{ color: theme.colors.onSurface }}>
-                  {T.materialProfiles.energyConsumption}: {profile.energyConsumption} kWh/g
+                  {T.materialProfiles.energyConsumptionLabel}: {profile.energyConsumption}
                 </Text>
               </Card.Content>
             </Card>

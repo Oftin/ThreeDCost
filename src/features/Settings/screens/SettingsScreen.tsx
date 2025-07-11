@@ -83,6 +83,16 @@ const SettingsScreen: React.FC = () => {
     { value: "zh" as Language, label: T.settings.chinese },
   ];
 
+  const getTranslatedLabel = (key: keyof typeof T.settings, replacements?: { [key: string]: string | number }) => {
+    let label = T.settings[key] || key;
+    if (replacements) {
+      for (const placeholder in replacements) {
+        label = label.replace(`{${placeholder}}`, String(replacements[placeholder]));
+      }
+    }
+    return label;
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
@@ -117,8 +127,9 @@ const SettingsScreen: React.FC = () => {
         <Text variant="titleMedium" style={[styles.sectionTitle, { color: theme.colors.onBackground, marginTop: 20 }]}>
           {T.settings.ratesAndDepreciation}
         </Text>
-        <TextInput label={T.settings.defaultHourlyRate} value={defaultHourlyRate} onChangeText={setDefaultHourlyRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedHourlyRate) && defaultHourlyRate.trim() === ""} />
-        <TextInput label={T.settings.defaultMachineDepreciationRate} value={defaultMachineDepreciationRate} onChangeText={setDefaultMachineDepreciationRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedMachineDepreciationRate) && defaultMachineDepreciationRate.trim() === ""} />
+
+        <TextInput label={getTranslatedLabel("defaultHourlyRate", { currency: settings.currency })} value={defaultHourlyRate} onChangeText={setDefaultHourlyRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedHourlyRate) && defaultHourlyRate.trim() === ""} />
+        <TextInput label={getTranslatedLabel("defaultMachineDepreciationRate", { currency: settings.currency })} value={defaultMachineDepreciationRate} onChangeText={setDefaultMachineDepreciationRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedMachineDepreciationRate) && defaultMachineDepreciationRate.trim() === ""} />
 
         <Button mode="contained" onPress={handleSaveRates} style={styles.button} disabled={areRatesUnchanged || !areInputsValidNumbers} buttonColor={areRatesUnchanged || !areInputsValidNumbers ? theme.colors.backdrop : theme.colors.primary} textColor={areRatesUnchanged || !areInputsValidNumbers ? theme.colors.onBackground : theme.colors.onPrimary}>
           {T.settings.saveRates}

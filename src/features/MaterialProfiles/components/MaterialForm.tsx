@@ -1,19 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button, useTheme, ActivityIndicator } from "react-native-paper";
-
-interface MaterialFormTranslations {
-  materialName: string;
-  costPerGram: string;
-  densityLabel: string;
-  energyConsumptionLabel: string;
-}
-
-interface CommonTranslations {
-  saving: string;
-  saveChanges: string;
-  addProfile: string;
-}
+import { useTranslation } from "@/src/localization/i18n";
 
 interface MaterialFormProps {
   formData: {
@@ -27,15 +15,23 @@ interface MaterialFormProps {
   isEditing: boolean;
   isSaving: boolean;
   currency: string;
-  translations: MaterialFormTranslations;
-  commonTranslations: CommonTranslations;
 }
 
-const MaterialForm: React.FC<MaterialFormProps> = ({ formData, onInputChange, onSave, isEditing, isSaving, currency, translations, commonTranslations }) => {
+const MaterialForm: React.FC<MaterialFormProps> = ({ formData, onInputChange, onSave, isEditing, isSaving, currency }) => {
   const theme = useTheme();
+  const T = useTranslation();
 
-  const getTranslatedLabel = (key: keyof MaterialFormTranslations, replacements?: { [key: string]: string | number }) => {
-    let label = translations[key] || key;
+  const getTranslatedLabel = (key: keyof typeof T.materialProfiles | keyof typeof T.common, replacements?: { [key: string]: string | number }) => {
+    let label;
+
+    if (T.materialProfiles && (key as keyof typeof T.materialProfiles) in T.materialProfiles) {
+      label = T.materialProfiles[key as keyof typeof T.materialProfiles];
+    } else if (T.common && (key as keyof typeof T.common) in T.common) {
+      label = T.common[key as keyof typeof T.common];
+    } else {
+      label = String(key);
+    }
+
     if (replacements) {
       for (const placeholder in replacements) {
         label = label.replace(`{${placeholder}}`, String(replacements[placeholder]));
@@ -46,12 +42,12 @@ const MaterialForm: React.FC<MaterialFormProps> = ({ formData, onInputChange, on
 
   return (
     <View style={styles.form}>
-      <TextInput label={translations.materialName} value={formData.name} onChangeText={(text) => onInputChange("name", text)} mode="outlined" style={styles.input} disabled={isSaving} />
+      <TextInput label={getTranslatedLabel("materialName")} value={formData.name} onChangeText={(text) => onInputChange("name", text)} mode="outlined" style={styles.input} disabled={isSaving} />
       <TextInput label={getTranslatedLabel("costPerGram", { currency: currency })} value={formData.costPerGram} onChangeText={(text) => onInputChange("costPerGram", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
-      <TextInput label={translations.densityLabel} value={formData.density} onChangeText={(text) => onInputChange("density", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
-      <TextInput label={translations.energyConsumptionLabel} value={formData.energyConsumption} onChangeText={(text) => onInputChange("energyConsumption", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
+      <TextInput label={getTranslatedLabel("densityLabel")} value={formData.density} onChangeText={(text) => onInputChange("density", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
+      <TextInput label={getTranslatedLabel("energyConsumptionLabel")} value={formData.energyConsumption} onChangeText={(text) => onInputChange("energyConsumption", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
       <Button mode="contained" onPress={onSave} style={styles.button} disabled={isSaving} icon={isSaving ? () => <ActivityIndicator size={20} color={theme.colors.onPrimary} /> : undefined}>
-        {isSaving ? commonTranslations.saving : isEditing ? commonTranslations.saveChanges : commonTranslations.addProfile}
+        {isSaving ? T.common.saving : isEditing ? T.common.saveChanges : T.common.addProfile}
       </Button>
     </View>
   );

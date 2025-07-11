@@ -3,6 +3,7 @@ import { MaterialProfile } from "../types/materialTypes";
 import { Alert } from "react-native";
 import { generateUUID } from "@/src/utils";
 import { MaterialProfilesContext } from "@/src/store/contexts/MaterialProfilesContext";
+import { useTranslation } from "@/src/localization/i18n";
 
 interface MaterialFormState {
   name: string;
@@ -18,6 +19,7 @@ interface UseMaterialFormProps {
 
 export const useMaterialForm = ({ profileId, onSaveSuccess }: UseMaterialFormProps) => {
   const { materialProfiles, addMaterialProfile, updateMaterialProfile } = useContext(MaterialProfilesContext);
+  const T = useTranslation();
 
   const [formData, setFormData] = useState<MaterialFormState>({
     name: "",
@@ -40,7 +42,7 @@ export const useMaterialForm = ({ profileId, onSaveSuccess }: UseMaterialFormPro
           energyConsumption: String(profileToEdit.energyConsumption),
         });
       } else {
-        Alert.alert("Błąd", "Nie znaleziono profilu do edycji.");
+        Alert.alert(T.common.error, T.materialProfiles.profileNotFound, [{ text: T.common.ok }]);
       }
     } else {
       setIsEditing(false);
@@ -51,7 +53,7 @@ export const useMaterialForm = ({ profileId, onSaveSuccess }: UseMaterialFormPro
         energyConsumption: "",
       });
     }
-  }, [profileId, materialProfiles]);
+  }, [profileId, materialProfiles, T]);
 
   const handleInputChange = useCallback((field: keyof MaterialFormState, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -59,7 +61,7 @@ export const useMaterialForm = ({ profileId, onSaveSuccess }: UseMaterialFormPro
 
   const handleSave = useCallback(async () => {
     if (!formData.name || !formData.costPerGram || !formData.density || !formData.energyConsumption) {
-      Alert.alert("Błąd", "Wszystkie pola są wymagane!");
+      Alert.alert(T.common.error, T.materialProfiles.allFieldsRequired, [{ text: T.common.ok }]);
       return;
     }
 
@@ -68,7 +70,7 @@ export const useMaterialForm = ({ profileId, onSaveSuccess }: UseMaterialFormPro
     const parsedEnergyConsumption = parseFloat(formData.energyConsumption.replace(",", "."));
 
     if (isNaN(parsedCostPerGram) || isNaN(parsedDensity) || isNaN(parsedEnergyConsumption)) {
-      Alert.alert("Błąd", "Wprowadź poprawne wartości liczbowe dla kosztu, gęstości i zużycia energii.");
+      Alert.alert(T.common.error, T.materialProfiles.invalidNumericValues, [{ text: T.common.ok }]);
       return;
     }
 
@@ -94,11 +96,11 @@ export const useMaterialForm = ({ profileId, onSaveSuccess }: UseMaterialFormPro
       }
     } catch (error) {
       console.error("Błąd podczas zapisu profilu materiału:", error);
-      Alert.alert("Błąd", "Wystąpił błąd podczas zapisu profilu. Spróbuj ponownie.");
+      Alert.alert(T.common.error, T.materialProfiles.errorSavingProfileGeneric, [{ text: T.common.ok }]);
     } finally {
       setIsSaving(false);
     }
-  }, [formData, isEditing, profileId, addMaterialProfile, updateMaterialProfile, onSaveSuccess]);
+  }, [formData, isEditing, profileId, addMaterialProfile, updateMaterialProfile, onSaveSuccess, T]);
 
   return {
     formData,

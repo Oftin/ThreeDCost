@@ -1,10 +1,12 @@
 import { TabBarIcon } from "@/src/features/common/components/TabBarIcon";
+import { useTranslation } from "@/src/localization/i18n";
 import { Tabs } from "expo-router";
 import React from "react";
 import { useTheme } from "react-native-paper";
 
 export default function TabLayout() {
   const theme = useTheme();
+  const T = useTranslation();
 
   return (
     <Tabs
@@ -17,21 +19,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Kalkulator",
+          title: T.navigation.calculatorTitle,
           tabBarIcon: ({ color }) => <TabBarIcon name="calculator" color={color} />,
         }}
       />
       <Tabs.Screen
         name="materialProfilesScreen"
         options={{
-          title: "Materiały",
+          title: T.navigation.calculatorMaterial,
           tabBarIcon: ({ color }) => <TabBarIcon name="cube" color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Ustawienia",
+          title: T.navigation.calculatorSettings,
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />

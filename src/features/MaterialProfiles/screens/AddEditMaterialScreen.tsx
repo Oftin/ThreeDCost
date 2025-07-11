@@ -36,7 +36,7 @@ const AddEditMaterialScreen: React.FC = () => {
         {Platform.OS === "ios" && <Appbar.Action icon="close" onPress={() => router.back()} />}
       </Appbar.Header>
 
-      <MaterialForm formData={formData} onInputChange={handleInputChange} onSave={handleSave} isEditing={isEditing} isSaving={isSaving} currency={settings.currency} translations={T.materialProfiles} commonTranslations={T.common} />
+      <MaterialForm formData={formData} onInputChange={handleInputChange} onSave={handleSave} isEditing={isEditing} isSaving={isSaving} currency={settings.currency} />
     </View>
   );
 };

@@ -44,19 +44,17 @@ const CalculationForm: React.FC<CalculationFormProps> = ({ formData, onInputChan
         <Text style={styles.materialSelectLabel}>{T.calculator.selectMaterialProfile}</Text>
         <SegmentedButtons value={selectedMaterialId || ""} onValueChange={onMaterialSelect} buttons={materialOptions} />
       </View>
-
       <TextInput label={T.calculator.printTimeHours} value={formData.printTimeHours} onChangeText={(text) => onInputChange("printTimeHours", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
       <TextInput label={T.calculator.printTimeMinutes} value={formData.printTimeMinutes} onChangeText={(text) => onInputChange("printTimeMinutes", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
-      <TextInput label={T.calculator.machineDepreciationRate} value={formData.machineDepreciationRate} onChangeText={(text) => onInputChange("machineDepreciationRate", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
-      <TextInput label={T.calculator.energyCostPerHour} value={formData.energyCostPerHour} onChangeText={(text) => onInputChange("energyCostPerHour", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
+      <TextInput label={getTranslatedLabel("machineDepreciationRate", { currency: currency })} value={formData.machineDepreciationRate} onChangeText={(text) => onInputChange("machineDepreciationRate", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
+      <TextInput label={getTranslatedLabel("energyCostPerHour", { currency: currency })} value={formData.energyCostPerHour} onChangeText={(text) => onInputChange("energyCostPerHour", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
       <TextInput label={T.calculator.postProcessingTimeHours} value={formData.postProcessingTimeHours} onChangeText={(text) => onInputChange("postProcessingTimeHours", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
-      <TextInput label={T.calculator.additionalCosts} value={formData.additionalCosts} onChangeText={(text) => onInputChange("additionalCosts", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
-
+      <TextInput label={getTranslatedLabel("additionalCosts", { currency: currency })} value={formData.additionalCosts} onChangeText={(text) => onInputChange("additionalCosts", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
       <Text variant="titleMedium" style={styles.sectionTitle}>
         {T.calculator.designParameters}
       </Text>
       <TextInput label={T.calculator.designTimeHours} value={formData.designTimeHours} onChangeText={(text) => onInputChange("designTimeHours", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
-      <TextInput label={T.calculator.designerHourlyRate} value={formData.designerHourlyRate} onChangeText={(text) => onInputChange("designerHourlyRate", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
+      <TextInput label={getTranslatedLabel("designerHourlyRate", { currency: currency })} value={formData.designerHourlyRate} onChangeText={(text) => onInputChange("designerHourlyRate", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
       <TextInput label={T.calculator.desiredMarginPercentage} value={formData.desiredMarginPercentage} onChangeText={(text) => onInputChange("desiredMarginPercentage", text)} keyboardType="numeric" mode="outlined" style={styles.input} />
     </View>
   );

@@ -4,6 +4,11 @@ import { Language } from "@/src/features/Settings/types/settingsTypes";
 
 const translations = {
   pl: {
+    navigation: {
+      calculatorTitle: "Kalkulator",
+      calculatorMaterial: "Materiały",
+      calculatorSettings: "Ustawienia",
+    },
     settings: {
       title: "Ustawienia",
       generalSettings: "Ogólne Ustawienia",
@@ -20,8 +25,8 @@ const translations = {
       english: "Angielski",
       chinese: "Chiński",
       ratesAndDepreciation: "Stawki i Amortyzacja",
-      defaultHourlyRate: "Domyślna stawka godzinowa pracy (zł/h)",
-      defaultMachineDepreciationRate: "Domyślna amortycja maszyny (zł/h)",
+      defaultHourlyRate: "Domyślna stawka godzinowa pracy ( {currency} / h )",
+      defaultMachineDepreciationRate: "Domyślna amortycja maszyny ( {currency} / h )",
       saveRates: "Zapisz Stawki",
       ratesSavedSuccess: "Stawki zostały pomyślnie zapisane!",
       ok: "OK",
@@ -40,15 +45,15 @@ const translations = {
       selectMaterialProfile: "Wybierz profil materiału:",
       printTimeHours: "Czas druku (godziny)",
       printTimeMinutes: "Czas druku (minuty)",
-      machineDepreciationRate: "Amortyzacja maszyny (koszt za godzinę, zł)",
-      energyCostPerHour: "Koszt energii elektrycznej (za godzinę, zł)",
+      machineDepreciationRate: "Amortyzacja maszyny (koszt za godzinę, {currency})",
+      energyCostPerHour: "Koszt energii elektrycznej (za godzinę, {currency})",
       postProcessingTimeHours: "Czas post-processing (godziny)",
-      additionalCosts: "Dodatkowe koszty (np. opakowanie, wysyłka, zł)",
+      additionalCosts: "Dodatkowe koszty (np. opakowanie, wysyłka, {currency})",
 
       // CalculationForm
       designParameters: "Parametry Projektowania 3D",
       designTimeHours: "Czas projektowania (godziny)",
-      designerHourlyRate: "Stawka godzinowa projektanta (zł)",
+      designerHourlyRate: "Stawka godzinowa projektanta ({currency}) / h",
       desiredMarginPercentage: "Żądana marża (%)",
 
       // CalculationResults
@@ -74,7 +79,6 @@ const translations = {
       profileSavedSuccess: "Profil materiału został pomyślnie zapisany!",
       profileDeletedSuccess: "Profil materiału został pomyślnie usunięty!",
       profileAddedSuccess: "Nowy profil materiału został pomyślnie dodany!",
-      errorSavingProfile: "Błąd podczas zapisu profilu materiału.",
       errorDeletingProfile: "Błąd podczas usuwania profilu materiału.",
       profileNameRequired: "Nazwa profilu jest wymagana.",
       materialTypeRequired: "Typ materiału jest wymagany.",
@@ -86,6 +90,11 @@ const translations = {
       costPerGram: "Koszt za gram ({currency})",
       densityLabel: "Gęstość (g/cm³)",
       energyConsumptionLabel: "Zużycie energii (kWh/g)",
+      profileNotFound: "Nie znaleziono profilu do edycji.",
+      allFieldsRequired: "Wszystkie pola są wymagane!",
+      invalidNumericValues: "Wprowadź poprawne wartości liczbowe dla kosztu, gęstości i zużycia energii.",
+      errorSavingProfile: "Błąd podczas zapisu profilu materiału.",
+      errorSavingProfileGeneric: "Wystąpił błąd podczas zapisu profilu. Spróbuj ponownie.",
     },
     common: {
       error: "Błąd",
@@ -101,9 +110,15 @@ const translations = {
       saveChanges: "Zapisz Zmiany",
       addProfile: "Dodaj Profil",
       saving: "Zapisuję...",
+      ok: "Ok",
     },
   },
   en: {
+    navigation: {
+      calculatorTitle: "Calculator",
+      calculatorMaterial: "Materials",
+      calculatorSettings: "Settings",
+    },
     settings: {
       title: "Settings",
       generalSettings: "General Settings",
@@ -120,8 +135,8 @@ const translations = {
       english: "English",
       chinese: "Chinese",
       ratesAndDepreciation: "Rates & Depreciation",
-      defaultHourlyRate: "Default hourly rate (PLN/h)",
-      defaultMachineDepreciationRate: "Default machine depreciation (PLN/h)",
+      defaultHourlyRate: "Default hourly rate ( {currency} / h )",
+      defaultMachineDepreciationRate: "Default machine depreciation ( {currency} / h )",
       saveRates: "Save Rates",
       ratesSavedSuccess: "Rates saved successfully!",
       ok: "OK",
@@ -140,15 +155,15 @@ const translations = {
       selectMaterialProfile: "Select material profile:",
       printTimeHours: "Print time (hours)",
       printTimeMinutes: "Print time (minutes)",
-      machineDepreciationRate: "Machine depreciation (cost per hour, PLN)",
-      energyCostPerHour: "Electricity cost (per hour, PLN)",
+      machineDepreciationRate: "Machine depreciation (cost per hour, {currency})",
+      energyCostPerHour: "Electricity cost (per hour, {currency})",
       postProcessingTimeHours: "Post-processing time (hours)",
-      additionalCosts: "Additional costs (e.g., packaging, shipping, PLN)",
+      additionalCosts: "Additional costs (e.g., packaging, shipping, {currency})",
 
       // CalculationForm
       designParameters: "3D Design Parameters",
       designTimeHours: "Design time (hours)",
-      designerHourlyRate: "Designer hourly rate (PLN)",
+      designerHourlyRate: "Designer hourly rate ({currency}) / h",
       desiredMarginPercentage: "Desired margin (%)",
 
       // CalculationResults
@@ -174,7 +189,6 @@ const translations = {
       profileSavedSuccess: "Material profile saved successfully!",
       profileDeletedSuccess: "Material profile deleted successfully!",
       profileAddedSuccess: "New material profile added successfully!",
-      errorSavingProfile: "Error saving material profile.",
       errorDeletingProfile: "Error deleting material profile.",
       profileNameRequired: "Profile name is required.",
       materialTypeRequired: "Material type is required.",
@@ -186,6 +200,11 @@ const translations = {
       costPerGram: "Cost per gram ({currency})",
       densityLabel: "Density (g/cm³)",
       energyConsumptionLabel: "Energy Consumption (kWh/g)",
+      profileNotFound: "Profile not found for editing.",
+      allFieldsRequired: "All fields are required!",
+      invalidNumericValues: "Please enter valid numeric values for cost, density, and energy consumption.",
+      errorSavingProfile: "Error saving material profile.",
+      errorSavingProfileGeneric: "An error occurred while saving the profile. Please try again.",
     },
     common: {
       error: "Error",
@@ -201,9 +220,15 @@ const translations = {
       saveChanges: "Save Changes",
       addProfile: "Add Profile",
       saving: "Saving...",
+      ok: "Ok",
     },
   },
   zh: {
+    navigation: {
+      calculatorTitle: "计算器",
+      calculatorMaterial: "材料",
+      calculatorSettings: "设置",
+    },
     settings: {
       title: "设置",
       generalSettings: "通用设置",
@@ -220,8 +245,8 @@ const translations = {
       english: "英语",
       chinese: "中文",
       ratesAndDepreciation: "费率与折旧",
-      defaultHourlyRate: "默认每小时费率 (PLN/h)",
-      defaultMachineDepreciationRate: "默认机器折旧 (PLN/h)",
+      defaultHourlyRate: "默认每小时费率 ( {currency} / h )",
+      defaultMachineDepreciationRate: "默认机器折旧 ( {currency} / h )",
       saveRates: "保存费率",
       ratesSavedSuccess: "费率已成功保存！",
       ok: "确定",
@@ -240,15 +265,15 @@ const translations = {
       selectMaterialProfile: "选择材料配置文件:",
       printTimeHours: "打印时间 (小时)",
       printTimeMinutes: "打印时间 (分钟)",
-      machineDepreciationRate: "机器折旧 (每小时成本, 兹罗提)",
-      energyCostPerHour: "电费 (每小时成本, 兹罗提)",
+      machineDepreciationRate: "机器折旧 (每小时成本, {currency})",
+      energyCostPerHour: "电费 (每小时成本, {currency})",
       postProcessingTimeHours: "后处理时间 (小时)",
-      additionalCosts: "额外费用 (例如, 包装, 运费, 兹罗提)",
+      additionalCosts: "额外费用 (例如, 包装, 运费, {currency})",
 
       // CalculationForm
       designParameters: "3D 设计参数",
       designTimeHours: "设计时间 (小时)",
-      designerHourlyRate: "设计师时薪 (兹罗提)",
+      designerHourlyRate: "设计师时薪 ({currency}) / h",
       desiredMarginPercentage: "期望利润 (%)",
 
       // CalculationResults
@@ -274,7 +299,6 @@ const translations = {
       profileSavedSuccess: "材料档案保存成功！",
       profileDeletedSuccess: "材料档案删除成功！",
       profileAddedSuccess: "新材料档案添加成功！",
-      errorSavingProfile: "保存材料档案时出错。",
       errorDeletingProfile: "删除材料档案时出错。",
       profileNameRequired: "档案名称为必填项。",
       materialTypeRequired: "材料类型为必填项。",
@@ -286,6 +310,11 @@ const translations = {
       costPerGram: "每克成本 ({currency})",
       densityLabel: "密度 (克/立方厘米)",
       energyConsumptionLabel: "能耗 (千瓦时/克)",
+      profileNotFound: "未找到要编辑的档案。",
+      allFieldsRequired: "所有字段都是必填项！",
+      invalidNumericValues: "请输入有效的成本、密度和能耗数字值。",
+      errorSavingProfile: "保存材料档案时出错。",
+      errorSavingProfileGeneric: "保存档案时发生错误。请重试。",
     },
     common: {
       error: "错误",
@@ -301,6 +330,7 @@ const translations = {
       saveChanges: "保存更改",
       addProfile: "添加档案",
       saving: "保存中...",
+      ok: "好的",
     },
   },
 };
