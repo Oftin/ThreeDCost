@@ -1,12 +1,14 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { Text, Appbar, useTheme, Card, Button } from "react-native-paper";
+import { Text, Appbar, useTheme, Card, Button, SegmentedButtons } from "react-native-paper";
 import { useTranslation } from "@/src/localization/i18n";
 import CalculationForm from "./CalculationForm";
 import { useCalculator } from "../hooks/useCalculator";
 import { MaterialProfilesContext } from "@/src/store/contexts/MaterialProfilesContext";
 import { SettingsContext } from "@/src/store/contexts/SettingsContext";
 import CalculationResults from "./CalculationResults";
+
+type CalculationMode = "printOnly" | "printAndDesign";
 
 const CalculatorScreen: React.FC = () => {
   const theme = useTheme();
@@ -16,6 +18,17 @@ const CalculatorScreen: React.FC = () => {
   const { materialProfiles } = React.useContext(MaterialProfilesContext);
   const { formData, results, handleInputChange, calculateMargin, selectedMaterial, selectMaterial } = useCalculator();
 
+  const [calculationMode, setCalculationMode] = React.useState<CalculationMode>("printOnly");
+
+  const calculationModeOptions = [
+    { value: "printOnly", label: T.calculator.printOnlyMode },
+    { value: "printAndDesign", label: T.calculator.printAndDesignMode },
+  ];
+
+  const handleCalculationModeChange = (value: string) => {
+    setCalculationMode(value as CalculationMode);
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
@@ -24,8 +37,13 @@ const CalculatorScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Card style={styles.card}>
           <Card.Content>
-            <CalculationForm formData={formData} onInputChange={handleInputChange} materials={materialProfiles} selectedMaterialId={selectedMaterial?.id} onMaterialSelect={selectMaterial} currency={settings.currency} />
-            <Button mode="contained" onPress={calculateMargin} style={styles.button}>
+            <View style={styles.modeSelectionContainer}>
+              <Text style={styles.modeSelectionLabel}>{T.calculator.selectCalculationMode}</Text>
+              <SegmentedButtons value={calculationMode} onValueChange={handleCalculationModeChange} buttons={calculationModeOptions} />
+            </View>
+
+            <CalculationForm formData={formData} onInputChange={handleInputChange} materials={materialProfiles} selectedMaterialId={selectedMaterial?.id} onMaterialSelect={selectMaterial} currency={settings.currency} calculationMode={calculationMode} />
+            <Button mode="contained" onPress={() => calculateMargin(calculationMode)} style={styles.button}>
               {T.calculator.calculateMargin}
             </Button>
           </Card.Content>
@@ -58,6 +76,13 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+  },
+  modeSelectionContainer: {
+    marginBottom: 20,
+  },
+  modeSelectionLabel: {
+    marginBottom: 8,
+    fontWeight: "bold",
   },
 });
 

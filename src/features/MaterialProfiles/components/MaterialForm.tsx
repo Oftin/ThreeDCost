@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, Button, useTheme, ActivityIndicator } from "react-native-paper";
 import { useTranslation } from "@/src/localization/i18n";
+import { SettingsContext } from "@/src/store/contexts/SettingsContext";
 
 interface MaterialFormProps {
   formData: {
@@ -20,6 +21,7 @@ interface MaterialFormProps {
 const MaterialForm: React.FC<MaterialFormProps> = ({ formData, onInputChange, onSave, isEditing, isSaving, currency }) => {
   const theme = useTheme();
   const T = useTranslation();
+  const { settings } = useContext(SettingsContext);
 
   const getTranslatedLabel = (key: keyof typeof T.materialProfiles | keyof typeof T.common, replacements?: { [key: string]: string | number }) => {
     let label;
@@ -40,12 +42,15 @@ const MaterialForm: React.FC<MaterialFormProps> = ({ formData, onInputChange, on
     return label;
   };
 
+  const densityLabel = settings.unitSystem === "metric" ? T.materialProfiles.densityLabelMetric : T.materialProfiles.densityLabelImperial;
+  const energyConsumptionLabel = settings.unitSystem === "metric" ? T.materialProfiles.energyConsumptionLabelMetric : T.materialProfiles.energyConsumptionLabelImperial;
+
   return (
     <View style={styles.form}>
       <TextInput label={getTranslatedLabel("materialName")} value={formData.name} onChangeText={(text) => onInputChange("name", text)} mode="outlined" style={styles.input} disabled={isSaving} />
       <TextInput label={getTranslatedLabel("costPerGram", { currency: currency })} value={formData.costPerGram} onChangeText={(text) => onInputChange("costPerGram", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
-      <TextInput label={getTranslatedLabel("densityLabel")} value={formData.density} onChangeText={(text) => onInputChange("density", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
-      <TextInput label={getTranslatedLabel("energyConsumptionLabel")} value={formData.energyConsumption} onChangeText={(text) => onInputChange("energyConsumption", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
+      <TextInput label={densityLabel} value={formData.density} onChangeText={(text) => onInputChange("density", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
+      <TextInput label={energyConsumptionLabel} value={formData.energyConsumption} onChangeText={(text) => onInputChange("energyConsumption", text)} keyboardType="numeric" mode="outlined" style={styles.input} disabled={isSaving} />
       <Button mode="contained" onPress={onSave} style={styles.button} disabled={isSaving} icon={isSaving ? () => <ActivityIndicator size={20} color={theme.colors.onPrimary} /> : undefined}>
         {isSaving ? T.common.saving : isEditing ? T.common.saveChanges : T.common.addProfile}
       </Button>

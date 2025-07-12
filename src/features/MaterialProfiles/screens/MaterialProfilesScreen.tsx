@@ -43,6 +43,9 @@ const MaterialProfilesScreen: React.FC = () => {
     return `${Number(value).toFixed(2)} ${currencySymbol}`;
   };
 
+  const densityLabel = settings.unitSystem === "metric" ? T.materialProfiles.densityLabelMetric : T.materialProfiles.densityLabelImperial;
+  const energyConsumptionLabel = settings.unitSystem === "metric" ? T.materialProfiles.energyConsumptionLabelMetric : T.materialProfiles.energyConsumptionLabelImperial;
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
@@ -78,10 +81,10 @@ const MaterialProfilesScreen: React.FC = () => {
                   {getTranslatedLabel("costPerGram", { currency: settings.currency })}: {formatValueWithCurrency(profile.costPerGram, settings.currency)}
                 </Text>
                 <Text style={{ color: theme.colors.onSurface }}>
-                  {T.materialProfiles.densityLabel}: {profile.density}
+                  {densityLabel}: {profile.density} {settings.unitSystem === "metric" ? "g/cm³" : "lb/in³"}
                 </Text>
                 <Text style={{ color: theme.colors.onSurface }}>
-                  {T.materialProfiles.energyConsumptionLabel}: {profile.energyConsumption}
+                  {energyConsumptionLabel}: {profile.energyConsumption} {settings.unitSystem === "metric" ? "kWh/g" : "kWh/lb"}
                 </Text>
               </Card.Content>
             </Card>

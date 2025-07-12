@@ -1,8 +1,8 @@
 import { CURRENCIES } from "@/src/constants/appConstants";
 import { SettingsContext } from "@/src/store/contexts/SettingsContext";
 import React, { useContext, useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { Text, Appbar, TextInput, Button, SegmentedButtons, Divider, Snackbar, useTheme } from "react-native-paper";
+import { View, StyleSheet, ScrollView, Alert, TouchableOpacity } from "react-native";
+import { Text, Appbar, TextInput, Button, SegmentedButtons, Divider, Snackbar, useTheme, Dialog, Portal, RadioButton } from "react-native-paper";
 import { Language, ThemeMode, UnitSystem } from "../types/settingsTypes";
 import { useTranslation } from "@/src/localization/i18n";
 import { CommonColors } from "@/src/styles/colors";
@@ -17,9 +17,22 @@ const SettingsScreen: React.FC = () => {
   const [defaultMachineDepreciationRate, setDefaultMachineDepreciationRate] = useState(String(settings.defaultMachineDepreciationRate));
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [currencyDialogVisible, setCurrencyDialogVisible] = useState(false);
+  const [languageDialogVisible, setLanguageDialogVisible] = useState(false);
 
   const onToggleSnackBar = () => setSnackbarVisible(!snackbarVisible);
   const onDismissSnackBar = () => setSnackbarVisible(false);
+
+  const showCurrencyDialog = () => {
+    console.log("Attempting to show currency dialog");
+    setCurrencyDialogVisible(true);
+  };
+  const hideCurrencyDialog = () => setCurrencyDialogVisible(false);
+  const showLanguageDialog = () => {
+    console.log("Attempting to show language dialog");
+    setLanguageDialogVisible(true);
+  };
+  const hideLanguageDialog = () => setLanguageDialogVisible(false);
 
   useEffect(() => {
     setDefaultHourlyRate(String(settings.defaultHourlyRate));
@@ -28,6 +41,7 @@ const SettingsScreen: React.FC = () => {
 
   const handleCurrencyChange = (value: string) => {
     updateSettings({ currency: value });
+    hideCurrencyDialog();
   };
 
   const handleThemeModeChange = (value: ThemeMode) => {
@@ -38,19 +52,29 @@ const SettingsScreen: React.FC = () => {
     updateSettings({ unitSystem: value });
   };
 
-  const handleLanguageChange = (value: Language) => {
-    updateSettings({ language: value });
+  const handleLanguageChange = (value: string) => {
+    updateSettings({ language: value as Language });
+    hideLanguageDialog();
   };
 
   const handleSaveRates = async () => {
+    const parsedHourlyRate = parseFloat(defaultHourlyRate.replace(",", "."));
+    const parsedMachineDepreciationRate = parseFloat(defaultMachineDepreciationRate.replace(",", "."));
+
+    if (isNaN(parsedHourlyRate) || defaultHourlyRate.trim() === "" || isNaN(parsedMachineDepreciationRate) || defaultMachineDepreciationRate.trim() === "") {
+      Alert.alert(T.common.error, T.settings.invalidNumberError, [{ text: T.common.ok }]);
+      return;
+    }
+
     try {
       await updateSettings({
-        defaultHourlyRate: parseFloat(defaultHourlyRate.replace(",", ".")),
-        defaultMachineDepreciationRate: parseFloat(defaultMachineDepreciationRate.replace(",", ".")),
+        defaultHourlyRate: parsedHourlyRate,
+        defaultMachineDepreciationRate: parsedMachineDepreciationRate,
       });
       onToggleSnackBar();
     } catch (error) {
       console.error("Błąd podczas zapisu stawek:", error);
+      Alert.alert(T.common.error, T.settings.errorSavingRates, [{ text: T.common.ok }]);
     }
   };
 
@@ -59,7 +83,7 @@ const SettingsScreen: React.FC = () => {
 
   const areRatesUnchanged = parsedHourlyRate === settings.defaultHourlyRate && parsedMachineDepreciationRate === settings.defaultMachineDepreciationRate;
 
-  const areInputsValidNumbers = !isNaN(parsedHourlyRate) && !isNaN(parsedMachineDepreciationRate) && defaultHourlyRate.trim() !== "" && defaultMachineDepreciationRate.trim() !== "";
+  const areInputsValidNumbers = !isNaN(parsedHourlyRate) && defaultHourlyRate.trim() !== "" && !isNaN(parsedMachineDepreciationRate) && defaultMachineDepreciationRate.trim() !== "";
 
   const currencyOptions = CURRENCIES.map((c) => ({
     value: c,
@@ -78,9 +102,19 @@ const SettingsScreen: React.FC = () => {
   ];
 
   const languageOptions: { value: Language; label: string }[] = [
-    { value: "pl" as Language, label: T.settings.polish },
-    { value: "en" as Language, label: T.settings.english },
-    { value: "zh" as Language, label: T.settings.chinese },
+    { value: "pl", label: T.settings.polish || "Polski" },
+    { value: "en", label: T.settings.english || "English" },
+    { value: "zh", label: T.settings.chinese || "中文" },
+    { value: "es", label: T.settings.spanish || "Español" },
+    { value: "fr", label: T.settings.french || "Français" },
+    { value: "de", label: T.settings.german || "Deutsch" },
+    { value: "pt-BR", label: T.settings.portugueseBrazil || "Português (Brasil)" },
+    { value: "pt-PT", label: T.settings.portuguesePortugal || "Português (Portugal)" },
+    { value: "ja", label: T.settings.japanese || "日本語" },
+    { value: "ko", label: T.settings.korean || "한국어" },
+    { value: "ru", label: T.settings.russian || "Русский" },
+    { value: "ar", label: T.settings.arabic || "العربية" },
+    { value: "hi", label: T.settings.hindi || "हिन्दी" },
   ];
 
   const getTranslatedLabel = (key: keyof typeof T.settings, replacements?: { [key: string]: string | number }) => {
@@ -93,6 +127,9 @@ const SettingsScreen: React.FC = () => {
     return label;
   };
 
+  const defaultHourlyRateLabel = settings.unitSystem === "metric" ? getTranslatedLabel("defaultHourlyRate", { currency: settings.currency, unit: "kg" }) : getTranslatedLabel("defaultHourlyRate", { currency: settings.currency, unit: "lb" });
+  const defaultMachineDepreciationRateLabel = settings.unitSystem === "metric" ? getTranslatedLabel("defaultMachineDepreciationRate", { currency: settings.currency, unit: "g" }) : getTranslatedLabel("defaultMachineDepreciationRate", { currency: settings.currency, unit: "oz" });
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
@@ -104,7 +141,9 @@ const SettingsScreen: React.FC = () => {
         </Text>
         <View style={styles.inputGroup}>
           <Text style={[styles.label, { color: theme.colors.onSurface }]}>{T.settings.defaultCurrency}</Text>
-          <SegmentedButtons<string> value={settings.currency} onValueChange={handleCurrencyChange} buttons={currencyOptions} />
+          <TouchableOpacity onPress={showCurrencyDialog} style={styles.touchableInput}>
+            <TextInput value={settings.currency} mode="outlined" editable={false} right={<TextInput.Icon icon="menu-down" />} style={[styles.inputField, { backgroundColor: theme.colors.surface }]} textColor={theme.colors.onSurface} pointerEvents="none" />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.inputGroup}>
@@ -119,7 +158,9 @@ const SettingsScreen: React.FC = () => {
 
         <View style={styles.inputGroup}>
           <Text style={[styles.label, { color: theme.colors.onSurface }]}>{T.settings.language}</Text>
-          <SegmentedButtons<Language> value={settings.language} onValueChange={handleLanguageChange} buttons={languageOptions} />
+          <TouchableOpacity onPress={showLanguageDialog} style={styles.touchableInput}>
+            <TextInput value={languageOptions.find((opt) => opt.value === settings.language)?.label || settings.language} mode="outlined" editable={false} right={<TextInput.Icon icon="menu-down" />} style={[styles.inputField, { backgroundColor: theme.colors.surface }]} textColor={theme.colors.onSurface} pointerEvents="none" />
+          </TouchableOpacity>
         </View>
 
         <Divider style={[styles.divider, { backgroundColor: theme.colors.outline }]} />
@@ -127,9 +168,8 @@ const SettingsScreen: React.FC = () => {
         <Text variant="titleMedium" style={[styles.sectionTitle, { color: theme.colors.onBackground, marginTop: 20 }]}>
           {T.settings.ratesAndDepreciation}
         </Text>
-
-        <TextInput label={getTranslatedLabel("defaultHourlyRate", { currency: settings.currency })} value={defaultHourlyRate} onChangeText={setDefaultHourlyRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedHourlyRate) && defaultHourlyRate.trim() === ""} />
-        <TextInput label={getTranslatedLabel("defaultMachineDepreciationRate", { currency: settings.currency })} value={defaultMachineDepreciationRate} onChangeText={setDefaultMachineDepreciationRate} keyboardType="numeric" mode="outlined" style={[styles.input, { backgroundColor: theme.colors.surface, color: theme.colors.onSurface }]} textColor={theme.colors.onSurface} error={!isNaN(parsedMachineDepreciationRate) && defaultMachineDepreciationRate.trim() === ""} />
+        <TextInput label={defaultHourlyRateLabel} value={defaultHourlyRate} onChangeText={setDefaultHourlyRate} keyboardType="numeric" mode="outlined" style={styles.inputField} textColor={theme.colors.onSurface} error={!areInputsValidNumbers && defaultHourlyRate.trim() === ""} />
+        <TextInput label={defaultMachineDepreciationRateLabel} value={defaultMachineDepreciationRate} onChangeText={setDefaultMachineDepreciationRate} keyboardType="numeric" mode="outlined" style={styles.inputField} textColor={theme.colors.onSurface} error={!areInputsValidNumbers && defaultMachineDepreciationRate.trim() === ""} />
 
         <Button mode="contained" onPress={handleSaveRates} style={styles.button} disabled={areRatesUnchanged || !areInputsValidNumbers} buttonColor={areRatesUnchanged || !areInputsValidNumbers ? theme.colors.backdrop : theme.colors.primary} textColor={areRatesUnchanged || !areInputsValidNumbers ? theme.colors.onBackground : theme.colors.onPrimary}>
           {T.settings.saveRates}
@@ -151,6 +191,42 @@ const SettingsScreen: React.FC = () => {
       >
         <Text style={{ color: CommonColors.onSuccessLight }}>{T.settings.ratesSavedSuccess}</Text>
       </Snackbar>
+
+      <Portal>
+        <Dialog visible={currencyDialogVisible} onDismiss={hideCurrencyDialog}>
+          <Dialog.Title>{T.settings.defaultCurrency}</Dialog.Title>
+          <Dialog.Content style={styles.dialogContent}>
+            <ScrollView>
+              <RadioButton.Group onValueChange={handleCurrencyChange} value={settings.currency}>
+                {CURRENCIES.map((c) => (
+                  <RadioButton.Item key={c} label={c} value={c} />
+                ))}
+              </RadioButton.Group>
+            </ScrollView>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideCurrencyDialog}>{T.common.cancel}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      <Portal>
+        <Dialog visible={languageDialogVisible} onDismiss={hideLanguageDialog}>
+          <Dialog.Title>{T.settings.language}</Dialog.Title>
+          <Dialog.Content style={styles.dialogContent}>
+            <ScrollView>
+              <RadioButton.Group onValueChange={handleLanguageChange} value={settings.language}>
+                {languageOptions.map((langOpt) => (
+                  <RadioButton.Item key={langOpt.value} label={langOpt.label} value={langOpt.value} />
+                ))}
+              </RadioButton.Group>
+            </ScrollView>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideLanguageDialog}>{T.common.cancel}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
@@ -166,11 +242,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontWeight: "bold",
   },
-  input: {
-    marginBottom: 15,
+  inputField: {
+    marginBottom: 16,
+    width: "100%",
   },
   inputGroup: {
-    marginBottom: 15,
+    marginBottom: 20,
   },
   label: {
     marginBottom: 8,
@@ -182,6 +259,12 @@ const styles = StyleSheet.create({
   divider: {
     marginVertical: 20,
     height: 1,
+  },
+  touchableInput: {
+    width: "100%",
+  },
+  dialogContent: {
+    maxHeight: 300,
   },
 });
 

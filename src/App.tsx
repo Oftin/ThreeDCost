@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PaperProvider } from "react-native-paper";
+import { PaperProvider, Portal } from "react-native-paper";
 import { ThemeProvider } from "@react-navigation/native";
 import { useColorScheme } from "react-native";
 import { PaperLightTheme, PaperDarkTheme, NavigationLightTheme, NavigationDarkTheme } from "./styles/theme";
@@ -27,7 +27,9 @@ const ThemedAppContent: React.FC<{ children: React.ReactNode }> = ({ children })
 
   return (
     <PaperProvider theme={paperTheme}>
-      <ThemeProvider value={navigationTheme}>{children}</ThemeProvider>
+      <ThemeProvider value={navigationTheme}>
+        <Portal.Host>{children}</Portal.Host>
+      </ThemeProvider>
     </PaperProvider>
   );
 };
