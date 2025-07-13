@@ -257,7 +257,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   divider: {
-    marginVertical: 20,
     height: 1,
   },
   touchableInput: {

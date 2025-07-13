@@ -14,6 +14,9 @@ export default function TabLayout() {
         headerShown: false,
         animation: "shift",
         tabBarActiveTintColor: theme.colors.primary,
+        tabBarIconStyle: {
+          marginTop: 4,
+        },
       }}
     >
       <Tabs.Screen

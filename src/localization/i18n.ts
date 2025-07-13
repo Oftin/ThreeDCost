@@ -117,6 +117,14 @@ const translations = {
       energyConsumptionLabelImperial: "Zużycie energii (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Błąd",
       back: "Wróć",
       add: "Dodaj",
@@ -246,6 +254,14 @@ const translations = {
       energyConsumptionLabelImperial: "Energy Consumption (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Error",
       back: "Back",
       add: "Add",
@@ -375,6 +391,14 @@ const translations = {
       energyConsumptionLabelImperial: "能耗 (千瓦时/磅)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "错误",
       back: "返回",
       add: "添加",
@@ -504,6 +528,14 @@ const translations = {
       energyConsumptionLabelImperial: "Consumo de Energía (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Error",
       back: "Volver",
       add: "Añadir",
@@ -633,6 +665,14 @@ const translations = {
       energyConsumptionLabelImperial: "Consommation d'Énergie (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Erreur",
       back: "Retour",
       add: "Ajouter",
@@ -762,6 +802,14 @@ const translations = {
       energyConsumptionLabelImperial: "Energieverbrauch (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Fehler",
       back: "Zurück",
       add: "Hinzufügen",
@@ -891,6 +939,14 @@ const translations = {
       energyConsumptionLabelImperial: "Consumo de Energia (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Erro",
       back: "Voltar",
       add: "Adicionar",
@@ -1020,6 +1076,14 @@ const translations = {
       energyConsumptionLabelImperial: "Consumo de Energia (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Erro",
       back: "Voltar",
       add: "Adicionar",
@@ -1149,6 +1213,14 @@ const translations = {
       energyConsumptionLabelImperial: "エネルギー消費量 (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "エラー",
       back: "戻る",
       add: "追加",
@@ -1278,6 +1350,14 @@ const translations = {
       energyConsumptionLabelImperial: "에너지 소비 (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "오류",
       back: "뒤로",
       add: "추가",
@@ -1407,6 +1487,14 @@ const translations = {
       energyConsumptionLabelImperial: "Потребление энергии (кВтч/фунт)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "Ошибка",
       back: "Назад",
       add: "Добавить",
@@ -1536,6 +1624,14 @@ const translations = {
       energyConsumptionLabelImperial: "استهلاك الطاقة (كيلووات ساعة/رطل)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "خطأ",
       back: "رجوع",
       add: "إضافة",
@@ -1665,6 +1761,14 @@ const translations = {
       energyConsumptionLabelImperial: "ऊर्जा खपत (kWh/lb)",
     },
     common: {
+      adLoadingError: "Test Error",
+      adErrorTitle: "Błąd Reklamy",
+      adLoadFailed: "Nie udało się załadować reklamy. Spróbuj ponownie.",
+      bannerAdPlaceholder: "To jest miejsce na Twój baner reklamowy!",
+      interstitialAdTitle: "Ważna wiadomość od naszych sponsorów",
+      interstitialAdPlaceholder: "Obejrzyj tę krótką reklamę, aby kontynuować.",
+      adCountdownText: "Reklama zakończy się za chwilę...", // Możesz dodać licznik JS
+      closeAd: "Zamknij reklamę i zobacz wyniki",
       error: "त्रुटि",
       back: "वापस",
       add: "जोड़ें",

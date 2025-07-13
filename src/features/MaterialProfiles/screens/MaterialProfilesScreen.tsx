@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { View, ScrollView, StyleSheet, Alert } from "react-native";
-import { Text, Appbar, Button, Card, IconButton, useTheme } from "react-native-paper";
+import { Text, Appbar, Button, Card, IconButton, useTheme, Dialog, Portal } from "react-native-paper";
 import { MaterialProfile } from "../types/materialTypes";
 import { router } from "expo-router";
 import { MaterialProfilesContext } from "@/src/store/contexts/MaterialProfilesContext";
 import { useTranslation } from "@/src/localization/i18n";
 import { SettingsContext } from "@/src/store/contexts/SettingsContext";
+
+const AD_FREQUENCY = 3;
 
 const MaterialProfilesScreen: React.FC = () => {
   const theme = useTheme();
@@ -14,8 +16,26 @@ const MaterialProfilesScreen: React.FC = () => {
 
   const T = useTranslation();
 
+  const [operationCount, setOperationCount] = useState(0);
+  const [showInterstitialAd, setShowInterstitialAd] = useState(false);
+  const [pendingOperation, setPendingOperation] = useState<(() => void) | null>(null);
+
+  const triggerAdIfNeeded = (callback: () => void) => {
+    const newCount = operationCount + 1;
+    setOperationCount(newCount);
+
+    if (newCount % AD_FREQUENCY === 0) {
+      setPendingOperation(() => callback);
+      setShowInterstitialAd(true);
+    } else {
+      callback();
+    }
+  };
+
   const handleEdit = (profile: MaterialProfile) => {
-    router.push({ pathname: "/material-profiles/[id]", params: { id: profile.id } });
+    triggerAdIfNeeded(() => {
+      router.push({ pathname: "/material-profiles/[id]", params: { id: profile.id } });
+    });
   };
 
   const handleDelete = (id: string) => {
@@ -23,10 +43,22 @@ const MaterialProfilesScreen: React.FC = () => {
       { text: T.common.cancel, style: "cancel" },
       {
         text: T.common.deleteConfirm,
-        onPress: () => deleteMaterialProfile(id),
+        onPress: () => {
+          triggerAdIfNeeded(() => {
+            deleteMaterialProfile(id);
+          });
+        },
         style: "destructive",
       },
     ]);
+  };
+
+  const handleCloseInterstitialAd = () => {
+    setShowInterstitialAd(false);
+    if (pendingOperation) {
+      pendingOperation();
+      setPendingOperation(null);
+    }
   };
 
   const getTranslatedLabel = (key: keyof typeof T.materialProfiles, replacements?: { [key: string]: string | number }) => {
@@ -91,6 +123,28 @@ const MaterialProfilesScreen: React.FC = () => {
           ))
         )}
       </ScrollView>
+
+      <View style={[styles.bannerAdContainer, { backgroundColor: theme.colors.surfaceVariant }]}>
+        <Text style={[styles.bannerAdText, { color: theme.colors.onSurfaceVariant }]}>{T.common.bannerAdPlaceholder}</Text>
+      </View>
+
+      <Portal>
+        <Dialog
+          visible={showInterstitialAd}
+          onDismiss={() => {
+            /* Reklama nie może być zamknięta bez obejrzenia */
+          }}
+        >
+          <Dialog.Title>{T.common.interstitialAdTitle}</Dialog.Title>
+          <Dialog.Content style={styles.interstitialAdContent}>
+            <Text style={[styles.interstitialAdText, { color: theme.colors.onSurface }]}>{T.common.interstitialAdPlaceholder}</Text>
+            <Text style={[styles.interstitialAdCountdown, { color: theme.colors.onSurfaceVariant }]}>{T.common.adCountdownText}</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={handleCloseInterstitialAd}>{T.common.closeAd}</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
@@ -101,6 +155,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 16,
+    paddingBottom: 70,
   },
   card: {
     marginBottom: 16,
@@ -114,6 +169,38 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 50,
     fontSize: 16,
+  },
+
+  bannerAdContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ccc",
+  },
+  bannerAdText: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+
+  interstitialAdContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 50,
+  },
+  interstitialAdText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  interstitialAdCountdown: {
+    fontSize: 16,
+    textAlign: "center",
+    fontStyle: "italic",
   },
 });
 
