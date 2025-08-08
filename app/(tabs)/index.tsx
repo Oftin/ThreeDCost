@@ -1,5 +1,3 @@
-import { CalculatorScreen } from "@/src/features/Calculator";
+import CalculatorScreen from "@/src/features/Calculator/screens/CalculatorScreen";
 
-export default function TabOneScreen() {
-  return <CalculatorScreen />;
-}
+export default CalculatorScreen;

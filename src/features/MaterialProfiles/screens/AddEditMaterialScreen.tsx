@@ -7,6 +7,15 @@ import MaterialForm from "../components/MaterialForm";
 import { useTranslation } from "@/src/localization/i18n";
 import { SettingsContext } from "@/src/store/contexts/SettingsContext";
 
+import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
+
+const bannerAdUnitId = __DEV__
+  ? TestIds.BANNER
+  : Platform.select({
+      ios: process.env.EXPO_IOS_BANNER_AD_UNIT_ID,
+      android: process.env.EXPO_ANDROID_BANNER_AD_UNIT_ID,
+    });
+
 const AddEditMaterialScreen: React.FC = () => {
   const { id } = useLocalSearchParams();
   const router = useRouter();
@@ -23,7 +32,7 @@ const AddEditMaterialScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Appbar.Header>
+      <Appbar.Header style={[{ backgroundColor: theme.colors.elevation.level5 }]}>
         {Platform.OS === "ios" ? (
           <Appbar.Content title={isEditing ? T.materialProfiles.editProfile : T.materialProfiles.addProfile} />
         ) : (
@@ -36,7 +45,21 @@ const AddEditMaterialScreen: React.FC = () => {
         {Platform.OS === "ios" && <Appbar.Action icon="close" onPress={() => router.back()} />}
       </Appbar.Header>
 
-      <MaterialForm formData={formData} onInputChange={handleInputChange} onSave={handleSave} isEditing={isEditing} isSaving={isSaving} currency={settings.currency} />
+      <View style={styles.contentContainer}>
+        <MaterialForm formData={formData} onInputChange={handleInputChange} onSave={handleSave} isEditing={isEditing} isSaving={isSaving} currency={settings.currency} />
+      </View>
+
+      <View style={styles.bannerAdContainer}>
+        <BannerAd
+          unitId={bannerAdUnitId as string}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+          onAdLoaded={() => console.log("AdMobBanner loaded!")}
+          onAdFailedToLoad={(error) => console.error("AdMobBanner failed to load:", error)}
+        />
+      </View>
     </View>
   );
 };
@@ -44,6 +67,20 @@ const AddEditMaterialScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 60,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  bannerAdContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
   },
 });
 

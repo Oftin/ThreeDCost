@@ -1,39 +1,115 @@
-import React, { useContext, useState } from "react";
-import { View, ScrollView, StyleSheet, Alert } from "react-native";
-import { Text, Appbar, Button, Card, IconButton, useTheme, Dialog, Portal } from "react-native-paper";
+import React, { useContext, useState, useEffect } from "react";
+import { View, ScrollView, StyleSheet, Alert, Platform } from "react-native";
+import { Text, Appbar, Card, IconButton, useTheme } from "react-native-paper";
 import { MaterialProfile } from "../types/materialTypes";
 import { router } from "expo-router";
 import { MaterialProfilesContext } from "@/src/store/contexts/MaterialProfilesContext";
 import { useTranslation } from "@/src/localization/i18n";
 import { SettingsContext } from "@/src/store/contexts/SettingsContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const AD_FREQUENCY = 3;
+import mobileAds, { BannerAd, BannerAdSize, TestIds, RewardedInterstitialAd, RewardedAdEventType, AdEventType } from "react-native-google-mobile-ads";
+
+const AD_FREQUENCY = 5;
+const ACTION_COUNT_KEY = "material_profiles_action_count";
+
+const rewardedInterstitialAdUnitId = __DEV__
+  ? TestIds.REWARDED_INTERSTITIAL
+  : Platform.select({
+      ios: process.env.EXPO_IOS_REWARDED_INTERSTITIAL_AD_UNIT_ID,
+      android: process.env.EXPO_ANDROID_REWARDED_INTERSTITIAL_AD_UNIT_ID,
+    });
+
+const bannerAdUnitId = __DEV__
+  ? TestIds.BANNER
+  : Platform.select({
+      ios: process.env.EXPO_IOS_BANNER_AD_UNIT_ID,
+      android: process.env.EXPO_ANDROID_BANNER_AD_UNIT_ID,
+    });
+
+const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(rewardedInterstitialAdUnitId as string, {
+  requestNonPersonalizedAdsOnly: true,
+});
 
 const MaterialProfilesScreen: React.FC = () => {
   const theme = useTheme();
   const { materialProfiles, deleteMaterialProfile } = useContext(MaterialProfilesContext);
   const { settings } = useContext(SettingsContext);
-
   const T = useTranslation();
 
-  const [operationCount, setOperationCount] = useState(0);
-  const [showInterstitialAd, setShowInterstitialAd] = useState(false);
-  const [pendingOperation, setPendingOperation] = useState<(() => void) | null>(null);
+  const [actionCount, setActionCount] = useState(0);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
-  const triggerAdIfNeeded = (callback: () => void) => {
-    const newCount = operationCount + 1;
-    setOperationCount(newCount);
+  const loadActionCount = async () => {
+    try {
+      const storedCount = await AsyncStorage.getItem(ACTION_COUNT_KEY);
+      if (storedCount) {
+        console.log("material_profiles_action_count: ", storedCount);
+        setActionCount(parseInt(storedCount, 10));
+      }
+    } catch (e) {
+      console.error("Failed to load action count:", e);
+    }
+  };
 
-    if (newCount % AD_FREQUENCY === 0) {
-      setPendingOperation(() => callback);
-      setShowInterstitialAd(true);
+  const saveActionCount = async (count: number) => {
+    try {
+      await AsyncStorage.setItem(ACTION_COUNT_KEY, count.toString());
+    } catch (e) {
+      console.error("Failed to save action count:", e);
+    }
+  };
+
+  useEffect(() => {
+    loadActionCount();
+    mobileAds().initialize();
+
+    const unsubscribeEarnedReward = rewardedInterstitial.addAdEventListener(RewardedAdEventType.EARNED_REWARD, async () => {
+      if (pendingAction) {
+        pendingAction();
+        setPendingAction(null);
+        saveActionCount(0);
+        setActionCount(0);
+      }
+    });
+
+    const unsubscribeClosed = rewardedInterstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      if (pendingAction) {
+        Alert.alert(T.common.adErrorTitle, "T.common.adInterruptedMessage");
+        setPendingAction(null);
+      }
+      rewardedInterstitial.load();
+    });
+
+    rewardedInterstitial.load();
+
+    return () => {
+      unsubscribeEarnedReward();
+      unsubscribeClosed();
+    };
+  }, [pendingAction]);
+
+  const handleAdAction = (callback: () => void) => {
+    const newCount = actionCount + 1;
+    saveActionCount(newCount);
+    setActionCount(newCount);
+
+    if (newCount >= AD_FREQUENCY) {
+      if (rewardedInterstitial.loaded) {
+        setPendingAction(() => callback);
+        rewardedInterstitial.show();
+      } else {
+        Alert.alert(T.common.adErrorTitle, "T.common.adNotReadyMessage");
+
+        callback();
+      }
     } else {
       callback();
     }
   };
 
   const handleEdit = (profile: MaterialProfile) => {
-    triggerAdIfNeeded(() => {
+    handleAdAction(() => {
       router.push({ pathname: "/material-profiles/[id]", params: { id: profile.id } });
     });
   };
@@ -43,22 +119,16 @@ const MaterialProfilesScreen: React.FC = () => {
       { text: T.common.cancel, style: "cancel" },
       {
         text: T.common.deleteConfirm,
-        onPress: () => {
-          triggerAdIfNeeded(() => {
-            deleteMaterialProfile(id);
-          });
-        },
+        onPress: () => deleteMaterialProfile(id),
         style: "destructive",
       },
     ]);
   };
 
-  const handleCloseInterstitialAd = () => {
-    setShowInterstitialAd(false);
-    if (pendingOperation) {
-      pendingOperation();
-      setPendingOperation(null);
-    }
+  const handleAdd = () => {
+    handleAdAction(() => {
+      router.push("/material-profiles/new");
+    });
   };
 
   const getTranslatedLabel = (key: keyof typeof T.materialProfiles, replacements?: { [key: string]: string | number }) => {
@@ -80,24 +150,16 @@ const MaterialProfilesScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Appbar.Header>
+      <Appbar.Header style={{ backgroundColor: theme.colors.elevation.level5 }}>
         <Appbar.Content title={T.materialProfiles.title} />
-        <Appbar.Action icon="plus" onPress={() => router.push("/material-profiles/new")} color={theme.colors.primary} />
+        <Appbar.Action icon="plus" onPress={handleAdd} color={theme.colors.primary} />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {materialProfiles.length === 0 ? (
           <Text style={[styles.emptyText, { color: theme.colors.onBackground }]}>{T.materialProfiles.noProfilesFound}</Text>
         ) : (
           materialProfiles.map((profile) => (
-            <Card
-              key={profile.id}
-              style={[
-                styles.card,
-                {
-                  backgroundColor: theme.colors.surface,
-                },
-              ]}
-            >
+            <Card key={profile.id} style={[styles.card, { backgroundColor: theme.colors.surface }]}>
               <Card.Title
                 title={profile.name}
                 titleStyle={{ color: theme.colors.onSurface }}
@@ -124,27 +186,9 @@ const MaterialProfilesScreen: React.FC = () => {
         )}
       </ScrollView>
 
-      <View style={[styles.bannerAdContainer, { backgroundColor: theme.colors.surfaceVariant }]}>
-        <Text style={[styles.bannerAdText, { color: theme.colors.onSurfaceVariant }]}>{T.common.bannerAdPlaceholder}</Text>
+      <View style={styles.bannerAdContainer}>
+        <BannerAd unitId={bannerAdUnitId as string} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} requestOptions={{ requestNonPersonalizedAdsOnly: true }} />
       </View>
-
-      <Portal>
-        <Dialog
-          visible={showInterstitialAd}
-          onDismiss={() => {
-            /* Reklama nie może być zamknięta bez obejrzenia */
-          }}
-        >
-          <Dialog.Title>{T.common.interstitialAdTitle}</Dialog.Title>
-          <Dialog.Content style={styles.interstitialAdContent}>
-            <Text style={[styles.interstitialAdText, { color: theme.colors.onSurface }]}>{T.common.interstitialAdPlaceholder}</Text>
-            <Text style={[styles.interstitialAdCountdown, { color: theme.colors.onSurfaceVariant }]}>{T.common.adCountdownText}</Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={handleCloseInterstitialAd}>{T.common.closeAd}</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
     </View>
   );
 };
@@ -170,7 +214,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
     fontSize: 16,
   },
-
   bannerAdContainer: {
     position: "absolute",
     bottom: 0,
@@ -179,28 +222,9 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f0f0f0",
     borderTopWidth: 1,
-    borderColor: "#ccc",
-  },
-  bannerAdText: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-
-  interstitialAdContent: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 50,
-  },
-  interstitialAdText: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  interstitialAdCountdown: {
-    fontSize: 16,
-    textAlign: "center",
-    fontStyle: "italic",
+    borderColor: "#e0e0e0",
   },
 });
 

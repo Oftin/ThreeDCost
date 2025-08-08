@@ -1,5 +1,3 @@
-import { MaterialProfilesScreen } from "@/src/features/MaterialProfiles";
+import MaterialProfilesScreen from "@/src/features/MaterialProfiles/screens/MaterialProfilesScreen";
 
-export default function TabTwoScreen() {
-  return <MaterialProfilesScreen />;
-}
+export default MaterialProfilesScreen;

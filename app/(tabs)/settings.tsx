@@ -1,5 +1,3 @@
-import { SettingsScreen } from "@/src/features/Settings";
+import SettingsScreen from "@/src/features/Settings/screens/SettingsScreen";
 
-export default function TabThreeScreen() {
-  return <SettingsScreen />;
-}
+export default SettingsScreen;

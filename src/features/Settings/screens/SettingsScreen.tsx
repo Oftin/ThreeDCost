@@ -132,7 +132,7 @@ const SettingsScreen: React.FC = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Appbar.Header>
+      <Appbar.Header style={[{ backgroundColor: theme.colors.elevation.level5 }]}>
         <Appbar.Content title={T.settings.title} />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.scrollContent}>
